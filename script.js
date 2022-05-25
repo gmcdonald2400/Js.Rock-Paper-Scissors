@@ -16,7 +16,7 @@ function computerPlay() {
         return Scissors;
     }
 }
-// the game start
+    // the game start
 function game(){
     let roundsPlayed = 0;
     let playerWin = 0;
