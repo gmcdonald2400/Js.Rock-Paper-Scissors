@@ -18,21 +18,22 @@ function computerPlay() {
 }
     // the game start
 function game(){
-    let roundsPlayed = 0;
     let playerWin = 0;
     let computerWin = 0;
     let gameWinner = "";
 
-    // loop trough the five rounds, track the rounds and wins
-    while (roundsPlayed < 5) {
-        roundsPlayed++;
-        const computerSelection = computerPlay();
-        playerSelection = prompt("Player, plaese type in your selection (Rock, Paper, or Scissors)!")
-        console.log(playRound(capitalize(playerSelection), computerSelection));
-        //console.log(roundsPlayed);
-        console.log("Player win totals " + playerWin);
-        console.log("computer win totals " + computerWin);
-    
+    // Add event listeners for all three buttons/run round on click/track and end game
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((button) =>  {
+        button.addEventListener('click', () => {
+            playerSelection = button.className;
+            const computerSelection = computerPlay();
+            battleWinText.textContent = (playRound(playerSelection, computerSelection));
+            playerWinText.textContent = "Player Win totals: " + playerWin;
+            computerWinText.textContent = "Computer Win totals: " + computerWin;
+            endGame();
+        })
+    })
 
         // play the round and determine winner 
         function playRound(firstLetterCap, computerSelection) {
@@ -66,27 +67,74 @@ function game(){
             }    
         }    
     
+    // create div DOM for all results
+    const container = document.querySelector("#container");
+    const resultsDiv = document.createElement("div");
+    resultsDiv.style.marginTop = "20px";
+    container.appendChild(resultsDiv);
+
+    // create player win tracking DOM 
+    const playerWinText = document.createElement("p");
+    playerWinText.style.color = "blue";
+    playerWinText.textContent = "Player Win totals: " + playerWin;
+    resultsDiv.appendChild(playerWinText);
+
+    // create computer win tracking DOM
+    const computerWinText = document.createElement("p");
+    computerWinText.style.color = "blue";
+    computerWinText.textContent = "Computer Win totals: " + computerWin;
+
+    // create battle win text DOM
+    const battleWinText = document.createElement("p");
+    battleWinText.style.color = "black";
+    resultsDiv.appendChild(battleWinText);
+
+    // create gmae win text DOM 
+    const gameWinText = document.createElement("p");
+    gameWinText.style.color = "orange";
+    gameWinText.textContent = gameWinner;
+    resultsDiv.appendChild(gameWinText);
+
+    // determine who won the five pionts first
+    function endGame() {
+        if (playerWin == 5) {
+            gameWinner = "YOU WIN!";
+            gameWinText.textContent = gameWinner;
+           
+            // disable game buttons 
+            document.getElementById("1").disabled = true;
+            document.getElementById("2").disabled = true;
+            document.getElementById("3").disabled = true;
+            
+            // create new DOM button to replay
+            const playAgainButton = document.createElement("button");
+            playAgainButton.textContent = "Play Again!";
+            resultsDiv.appendChild(playAgainButton);
+
+            // if clicked reload page 
+            playAgainButton.addEventListener('click', () => {
+                location.reload();
+            })
+        }else if (computerWin == 5) {
+            gameWinner = "Computer Wins!"
+            gameWinText.textContent = gameWinner;
+            
+            // disable game buttons 
+            document.getElementById("1").disabled = true;
+            document.getElementById("2").disabled = true;
+            document.getElementById("3").disabled = true;
+
+            // create new DOM button to replay 
+            const playAgainButton = document.createElement("button");
+            playAgainButton.textContent = "Play Again!";
+            resultsDiv.appendChild(playAgainButton);
+
+            //if clicked, reload page 
+            playAgainButton.addEventListener('click', () => {
+                location.reload();
+            })
+        }
     }
-
-    // determine who won the five round set
-    if (playerWin > computerWin) {
-        gameWinner = "YOU WIN!";
-    } else if (playerWin === computerWin) {
-        gameWinner = "TIE!";
-    } else {
-        gameWinner = "COMPUTER WINS!";
-    }
-
-    //write out the winner to the screen
-    console.log("The five game winner is: " + gameWinner);
 }
-// fonction to format/capitalize the input
-function capitalize(playerSelection) {
-    let allLowerCase = playerSelection.toLowerCase();
-    let firstLetterCap = allLowerCase.charAt(0).toUpperCase() + allLowerCase.slice(1);
-    //console.log(firstLatterCap);
-    return firstLetterCap;
-}
-
-// function call to start the game 
+// function call to start the game
 game();
